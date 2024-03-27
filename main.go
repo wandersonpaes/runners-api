@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	database.SetUpDatabase()
+	database.SetUp()
 
 	fmt.Println("Runners API is running!")
 	r := router.CreateMux()

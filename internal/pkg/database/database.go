@@ -12,7 +12,7 @@ import (
 
 var databaseConnectionString = ""
 
-func SetUpDatabase() {
+func SetUp() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}

@@ -22,6 +22,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = user.Prepare(); err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
 	db, err := database.Conectar()
 	if err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)

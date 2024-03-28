@@ -1,6 +1,10 @@
 package user
 
-import "time"
+import (
+	"errors"
+	"strings"
+	"time"
+)
 
 type User struct {
 	ID       uint64    `json:"id,omitempty"`
@@ -9,4 +13,39 @@ type User struct {
 	Email    string    `json:"email,omitempty"`
 	Password string    `json:"password,omitempty"`
 	CreateOn time.Time `json:"createOn,omitempty"`
+}
+
+func (user *User) Prepare() error {
+	if err := user.validate(); err != nil {
+		return err
+	}
+
+	user.format()
+	return nil
+}
+
+func (user *User) validate() error {
+	if user.Name == "" {
+		return errors.New("the name is needed and cannot be empty")
+	}
+
+	if user.Nick == "" {
+		return errors.New("the nick is needed and cannot be empty")
+	}
+
+	if user.Email == "" {
+		return errors.New("the email is needed and cannot be empty")
+	}
+
+	if user.Password == "" {
+		return errors.New("the password is needed and cannot be empty")
+	}
+
+	return nil
+}
+
+func (user *User) format() {
+	user.Name = strings.TrimSpace(user.Name)
+	user.Nick = strings.TrimSpace(user.Nick)
+	user.Email = strings.TrimSpace(user.Email)
 }

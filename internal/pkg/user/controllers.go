@@ -2,37 +2,40 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/wandersonpaes/runners-api/internal/pkg/database"
+	"github.com/wandersonpaes/runners-api/internal/pkg/response"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		response.ERR(w, http.StatusUnprocessableEntity, err)
+		return
 	}
 
 	var user User
 	if err = json.Unmarshal(bodyRequest, &user); err != nil {
-		log.Fatal(err)
+		response.ERR(w, http.StatusBadRequest, err)
+		return
 	}
 
 	db, err := database.Conectar()
 	if err != nil {
-		log.Fatal(err)
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	userTable := newUserConnection(db)
-	userID, err := userTable.create(user)
+	user.ID, err = userTable.create(user)
 	if err != nil {
-		log.Fatal(err)
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("User created on ID: %d", userID)))
+	response.JSON(w, http.StatusOK, user)
 }
 
 func SearchAll(w http.ResponseWriter, r *http.Request) {

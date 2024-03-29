@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/wandersonpaes/runners-api/internal/pkg/database"
 	"github.com/wandersonpaes/runners-api/internal/pkg/response"
 )
@@ -64,7 +66,29 @@ func SearchAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func Search(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Searching a User!"))
+	parameters := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	userTable := newUserConnection(db)
+	user, err := userTable.searchByID(userID)
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, user)
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {

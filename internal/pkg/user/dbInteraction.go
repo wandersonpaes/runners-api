@@ -69,3 +69,29 @@ func (userTable userConnection) search(nameOrNick string) ([]User, error) {
 
 	return users, nil
 }
+
+func (userTable userConnection) searchByID(ID uint64) (User, error) {
+	lines, err := userTable.db.Query(
+		"select id, name, nick, email, createOn from users where id = ?",
+		ID,
+	)
+	if err != nil {
+		return User{}, err
+	}
+	defer lines.Close()
+
+	var user User
+	if lines.Next() {
+		if err = lines.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreateOn,
+		); err != nil {
+			return User{}, err
+		}
+	}
+
+	return user, nil
+}

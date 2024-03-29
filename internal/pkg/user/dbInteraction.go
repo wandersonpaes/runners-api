@@ -111,3 +111,19 @@ func (userTable userConnection) update(ID uint64, user User) error {
 
 	return nil
 }
+
+func (userTable userConnection) delete(ID uint64) error {
+	statement, err := userTable.db.Prepare(
+		"delete from users where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(ID); err != nil {
+		return err
+	}
+
+	return nil
+}

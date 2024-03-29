@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/wandersonpaes/runners-api/internal/pkg/database"
 	"github.com/wandersonpaes/runners-api/internal/pkg/response"
@@ -44,7 +45,22 @@ func Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func SearchAll(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Searching for all Users!"))
+	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	userTable := newUserConnection(db)
+	users, err := userTable.search(nameOrNick)
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, users)
 }
 
 func Search(w http.ResponseWriter, r *http.Request) {

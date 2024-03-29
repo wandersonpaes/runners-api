@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -33,4 +34,38 @@ func (userTable userConnection) create(user User) (uint64, error) {
 	}
 
 	return uint64(id), nil
+}
+
+func (userTable userConnection) search(nameOrNick string) ([]User, error) {
+	nameOrNick = fmt.Sprintf("%%%s%%", nameOrNick)
+
+	line, err := userTable.db.Query(
+		"select id, name, nick, email, createOn from users where name LIKE ? or nick LIKE ?",
+		nameOrNick, nameOrNick,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	defer line.Close()
+
+	var users []User
+
+	for line.Next() {
+		var user User
+
+		if err = line.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreateOn,
+		); err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
 }

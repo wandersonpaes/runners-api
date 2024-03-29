@@ -25,7 +25,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = user.Prepare(); err != nil {
+	if err = user.Prepare("register"); err != nil {
 		response.ERR(w, http.StatusBadRequest, err)
 		return
 	}
@@ -92,7 +92,45 @@ func Search(w http.ResponseWriter, r *http.Request) {
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Updating a User!"))
+	parameters := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	bodyRequest, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.ERR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var user User
+	if err = json.Unmarshal(bodyRequest, &user); err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = user.Prepare("edition"); err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	userTable := newUserConnection(db)
+	if err = userTable.update(userID, user); err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {

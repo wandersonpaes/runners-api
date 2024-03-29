@@ -95,3 +95,19 @@ func (userTable userConnection) searchByID(ID uint64) (User, error) {
 
 	return user, nil
 }
+
+func (userTable userConnection) update(ID uint64, user User) error {
+	statement, err := userTable.db.Prepare(
+		"update users set name = ?, nick = ?, email = ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(user.Name, user.Nick, user.Email, ID); err != nil {
+		return err
+	}
+
+	return nil
+}

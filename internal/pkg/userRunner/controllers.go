@@ -1,4 +1,4 @@
-package user
+package userRunner
 
 import (
 	"encoding/json"
@@ -36,7 +36,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userTable := newUserConnection(db)
+	userTable := NewUserConnection(db)
 	user.ID, err = userTable.create(user)
 	if err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)
@@ -55,7 +55,7 @@ func SearchAll(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	userTable := newUserConnection(db)
+	userTable := NewUserConnection(db)
 	users, err := userTable.search(nameOrNick)
 	if err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)
@@ -81,7 +81,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	userTable := newUserConnection(db)
+	userTable := NewUserConnection(db)
 	user, err := userTable.searchByID(userID)
 	if err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)
@@ -124,7 +124,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	userTable := newUserConnection(db)
+	userTable := NewUserConnection(db)
 	if err = userTable.update(userID, user); err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)
 		return
@@ -149,7 +149,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	userTable := newUserConnection(db)
+	userTable := NewUserConnection(db)
 	if err = userTable.delete(userID); err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)
 		return

@@ -3,38 +3,38 @@ package routes
 import (
 	"net/http"
 
-	"github.com/wandersonpaes/runners-api/internal/pkg/user"
+	"github.com/wandersonpaes/runners-api/internal/pkg/userRunner"
 )
 
 var usersRoutes = []Route{
 	{
 		URI:            "/users",
 		Method:         http.MethodPost,
-		Function:       user.Create,
+		Function:       userRunner.Create,
 		Authentication: false,
 	},
 	{
 		URI:            "/users",
 		Method:         http.MethodGet,
-		Function:       user.SearchAll,
+		Function:       userRunner.SearchAll,
 		Authentication: false,
 	},
 	{
 		URI:            "/users/{userID}",
 		Method:         http.MethodGet,
-		Function:       user.Search,
+		Function:       userRunner.Search,
 		Authentication: false,
 	},
 	{
 		URI:            "/users/{userID}",
 		Method:         http.MethodPut,
-		Function:       user.Update,
+		Function:       userRunner.Update,
 		Authentication: false,
 	},
 	{
 		URI:            "/users/{userID}",
 		Method:         http.MethodDelete,
-		Function:       user.Delete,
+		Function:       userRunner.Delete,
 		Authentication: false,
 	},
 }

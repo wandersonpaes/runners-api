@@ -1,4 +1,4 @@
-package user
+package userRunner
 
 import (
 	"database/sql"
@@ -6,15 +6,15 @@ import (
 	"log"
 )
 
-type userConnection struct {
+type UserConnection struct {
 	db *sql.DB
 }
 
-func newUserConnection(db *sql.DB) *userConnection {
-	return &userConnection{db}
+func NewUserConnection(db *sql.DB) *UserConnection {
+	return &UserConnection{db}
 }
 
-func (userTable userConnection) create(user User) (uint64, error) {
+func (userTable UserConnection) create(user User) (uint64, error) {
 	statement, err := userTable.db.Prepare(
 		"insert into users (name, nick, email, password) values(?, ?, ?, ?)",
 	)
@@ -36,7 +36,7 @@ func (userTable userConnection) create(user User) (uint64, error) {
 	return uint64(id), nil
 }
 
-func (userTable userConnection) search(nameOrNick string) ([]User, error) {
+func (userTable UserConnection) search(nameOrNick string) ([]User, error) {
 	nameOrNick = fmt.Sprintf("%%%s%%", nameOrNick)
 
 	line, err := userTable.db.Query(
@@ -70,7 +70,7 @@ func (userTable userConnection) search(nameOrNick string) ([]User, error) {
 	return users, nil
 }
 
-func (userTable userConnection) searchByID(ID uint64) (User, error) {
+func (userTable UserConnection) searchByID(ID uint64) (User, error) {
 	lines, err := userTable.db.Query(
 		"select id, name, nick, email, createOn from users where id = ?",
 		ID,
@@ -96,7 +96,7 @@ func (userTable userConnection) searchByID(ID uint64) (User, error) {
 	return user, nil
 }
 
-func (userTable userConnection) update(ID uint64, user User) error {
+func (userTable UserConnection) update(ID uint64, user User) error {
 	statement, err := userTable.db.Prepare(
 		"update users set name = ?, nick = ?, email = ? where id = ?",
 	)
@@ -112,7 +112,7 @@ func (userTable userConnection) update(ID uint64, user User) error {
 	return nil
 }
 
-func (userTable userConnection) delete(ID uint64) error {
+func (userTable UserConnection) delete(ID uint64) error {
 	statement, err := userTable.db.Prepare(
 		"delete from users where id = ?",
 	)
@@ -126,4 +126,24 @@ func (userTable userConnection) delete(ID uint64) error {
 	}
 
 	return nil
+}
+
+func (userTable UserConnection) SearchByEmail(email string) (User, error) {
+	line, err := userTable.db.Query(
+		"select id, password from users where email = ?",
+		email,
+	)
+	if err != nil {
+		return User{}, err
+	}
+	defer line.Close()
+
+	var user User
+	if line.Next() {
+		if err = line.Scan(&user.ID, &user.Password); err != nil {
+			return User{}, err
+		}
+	}
+
+	return user, nil
 }

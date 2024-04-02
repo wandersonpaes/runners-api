@@ -1,11 +1,26 @@
-package router
+package app
 
 import (
 	"github.com/gorilla/mux"
 	"github.com/wandersonpaes/runners-api/internal/app/routes"
 )
 
+func SetUp(r *mux.Router) *mux.Router {
+	runnersRoutes := routes.Users
+	runnersRoutes = append(runnersRoutes, routes.Login)
+
+	for _, route := range runnersRoutes {
+		if route.Authentication {
+			r.HandleFunc(route.URI, logger(authenticate(route.Function))).Methods(route.Method)
+		} else {
+			r.HandleFunc(route.URI, logger(route.Function)).Methods(route.Method)
+		}
+	}
+
+	return r
+}
+
 func CreateMux() *mux.Router {
 	r := mux.NewRouter()
-	return routes.SetUp(r)
+	return SetUp(r)
 }

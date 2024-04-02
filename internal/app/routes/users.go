@@ -6,7 +6,7 @@ import (
 	"github.com/wandersonpaes/runners-api/internal/pkg/userRunner"
 )
 
-var usersRoutes = []Route{
+var Users = []Route{
 	{
 		URI:            "/users",
 		Method:         http.MethodPost,
@@ -17,7 +17,7 @@ var usersRoutes = []Route{
 		URI:            "/users",
 		Method:         http.MethodGet,
 		Function:       userRunner.SearchAll,
-		Authentication: false,
+		Authentication: true,
 	},
 	{
 		URI:            "/users/{userID}",

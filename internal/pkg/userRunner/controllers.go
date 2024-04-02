@@ -2,6 +2,7 @@ package userRunner
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strconv"
@@ -10,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/wandersonpaes/runners-api/internal/pkg/database"
 	"github.com/wandersonpaes/runners-api/internal/pkg/response"
+	"github.com/wandersonpaes/runners-api/internal/pkg/security"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +99,17 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
 	if err != nil {
 		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	userIdOnToken, err := security.ExtracUserID(r)
+	if err != nil {
+		response.ERR(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if userID != userIdOnToken {
+		response.ERR(w, http.StatusForbidden, errors.New("it's not possible updater a user that is not yours"))
 		return
 	}
 

@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/wandersonpaes/runners-api/internal/app/routes"
+	"github.com/wandersonpaes/runners-api/internal/pkg/routes"
 )
 
 func SetUp(r *mux.Router) *mux.Router {
@@ -18,9 +18,4 @@ func SetUp(r *mux.Router) *mux.Router {
 	}
 
 	return r
-}
-
-func CreateMux() *mux.Router {
-	r := mux.NewRouter()
-	return SetUp(r)
 }

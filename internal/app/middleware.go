@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/wandersonpaes/runners-api/internal/pkg/auth"
 	"github.com/wandersonpaes/runners-api/internal/pkg/response"
+	"github.com/wandersonpaes/runners-api/internal/pkg/security"
 )
 
 func logger(nextFunc http.HandlerFunc) http.HandlerFunc {
@@ -17,7 +17,7 @@ func logger(nextFunc http.HandlerFunc) http.HandlerFunc {
 
 func authenticate(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if err := auth.ValidateToken(r); err != nil {
+		if err := security.ValidateToken(r); err != nil {
 			response.ERR(w, http.StatusUnauthorized, err)
 			return
 		}

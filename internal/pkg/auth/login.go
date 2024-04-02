@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -44,13 +43,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := CreateToken(userSalveInDatabase.ID)
+	token, err := security.CreateToken(userSalveInDatabase.ID)
 	if err != nil {
 		response.ERR(w, http.StatusInternalServerError, err)
 		return
 	}
-	fmt.Println(token)
 
-	fmt.Println(userSalveInDatabase)
-	w.Write([]byte("You are logged!"))
+	w.Write([]byte(token))
 }

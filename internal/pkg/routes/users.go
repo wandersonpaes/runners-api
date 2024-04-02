@@ -23,18 +23,18 @@ var Users = []Route{
 		URI:            "/users/{userID}",
 		Method:         http.MethodGet,
 		Function:       userRunner.Search,
-		Authentication: false,
+		Authentication: true,
 	},
 	{
 		URI:            "/users/{userID}",
 		Method:         http.MethodPut,
 		Function:       userRunner.Update,
-		Authentication: false,
+		Authentication: true,
 	},
 	{
 		URI:            "/users/{userID}",
 		Method:         http.MethodDelete,
 		Function:       userRunner.Delete,
-		Authentication: false,
+		Authentication: true,
 	},
 }

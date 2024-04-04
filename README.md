@@ -28,7 +28,13 @@ Then you need to create a `.env` file with the below content:
 
     SECRET_KEY=yourSecretKey
 
-Finally you can run de command below and play :smile:
+Finally you can run the commands below and play :smile:
+
+Download the dependencies from `go.mod`
+
+    go mod download
+
+Running the API:
 
     go run main.go
 
@@ -53,7 +59,7 @@ Finally you can run de command below and play :smile:
 
 ### User's endpoint
 
-Pay attention to the user token, you need to make some requests.
+Pay attention to the user token, you need it to make some requests.
 
 ### Create an Runner User
 
@@ -72,7 +78,7 @@ Pay attention to the user token, you need to make some requests.
 
 ### Search Runner User(s) by name or nick
 
-Here you can use query parameters
+Here you use query parameters.
 
 `GET /users?user={nameOrNick}`
 
@@ -89,7 +95,7 @@ Here you can use query parameters
 
 ### Search Runner User by ID
 
-`GET /users/{id}`
+`GET /users/{userID}`
 
     curl -i -X GET -H "Authorization: Bearer tokenHere" "http://localhost:5000/users/5"
 
@@ -106,7 +112,7 @@ Here you can use query parameters
 
 Here you can update name, nick and email.
 
-`PUT /users/{id}`
+`PUT /users/{userID}`
 
     curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer tokenHere" -d '{"name":"email2","nick":"email2","email":"email2@gmail.com"}' http://localhost:5000/users/5
 
@@ -119,7 +125,7 @@ Here you can update name, nick and email.
 
 ### Delete Runner User
 
-`DELETE /users/{id}`
+`DELETE /users/{userID}`
 
     curl -i -X DELETE -H "Authorization: Bearer tokenHere" http://localhost:5000/users/5
 
@@ -128,4 +134,19 @@ Here you can update name, nick and email.
     HTTP/1.1 204 No Content
     Content-Type: application/json
     Date: Wed, 03 Apr 2024 22:08:32 GMT
+
+
+### Follow Runner User
+
+The `userID` is the user to be followed.
+
+`POST /user/{userID}/follow`
+
+    curl -i -X POST -H "Authorization: Bearer tokenHere" http://localhost:5000/users/2/follow
+
+#### Response
+
+    HTTP/1.1 204 No Content
+    Content-Type: application/json
+    Date: Thu, 04 Apr 2024 20:44:14 GMT
 

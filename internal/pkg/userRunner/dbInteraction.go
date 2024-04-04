@@ -147,3 +147,19 @@ func (userTable UserConnection) SearchByEmail(email string) (User, error) {
 
 	return user, nil
 }
+
+func (followersTable UserConnection) follow(userID, followerID uint64) error {
+	statement, err := followersTable.db.Prepare(
+		"insert ignore into followers (user_id, follower_id) values (?, ?)",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err := statement.Exec(userID, followerID); err != nil {
+		return err
+	}
+
+	return nil
+}

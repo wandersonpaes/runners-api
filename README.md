@@ -150,3 +150,16 @@ The `userID` is the user to be followed.
     Content-Type: application/json
     Date: Thu, 04 Apr 2024 20:44:14 GMT
 
+### Unfollow Runner User
+
+The `userID` is the user to be unfollowed.
+
+`POST /user/{userID}/unfollow`
+
+    curl -i -X POST -H "Authorization: Bearer tokenHere" http://localhost:5000/users/2/unfollow
+
+#### Response
+
+    HTTP/1.1 204 No Content
+    Content-Type: application/json
+    Date: Fri, 05 Apr 2024 18:27:22 GMT

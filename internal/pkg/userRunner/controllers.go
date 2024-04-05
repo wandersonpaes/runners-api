@@ -217,3 +217,38 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusNoContent, nil)
 }
+
+func Unfollow(w http.ResponseWriter, r *http.Request) {
+	followerID, err := security.ExtracUserID(r)
+	if err != nil {
+		response.ERR(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	parameters := mux.Vars(r)
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if followerID == userID {
+		response.ERR(w, http.StatusForbidden, errors.New("it's not possible unfollow yourself"))
+		return
+	}
+
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	followersTable := NewUserConnection(db)
+	if err = followersTable.unfollow(userID, followerID); err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
+}

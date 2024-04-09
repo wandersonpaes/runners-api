@@ -4,11 +4,12 @@ Developing the API for the Runners Social Network (work in progress). This proje
 
 ## How to run locally
 
-After cloning this repository. You need to have a database configured, I used MySQL and you can run the following SQL commands to create you database.
+After cloning this repository. You need to have a database configured, I used MySQL and you can run the following SQL commands to create your database.
 
     CREATE DATABASE IF NOT EXISTS runners;
     USE runners;
 
+    DROP TABLE IF EXISTS followers;
     DROP TABLE IF EXISTS users;
 
     CREATE TABLE users(
@@ -18,6 +19,20 @@ After cloning this repository. You need to have a database configured, I used My
         email varchar(50) not null unique,
         password varchar(100) not null,
         createOn timestamp default current_timestamp()
+    ) ENGINE=INNODB;
+
+    CREATE TABLE followers(
+        user_id int not null,
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+        follower_id int not null,
+        FOREIGN KEY (follower_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+        primary key (user_id, follower_id)
     ) ENGINE=INNODB;
 
 Then you need to create a `.env` file with the below content:

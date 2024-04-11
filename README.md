@@ -196,3 +196,21 @@ The `userID` is the user who wants to see his followers.
 
     [{"id":2,"name":"User 2","nick":"user2","email":"user2@gmail.com","createOn":"2024-04-04T15:35:00-03:00"},
     {"id":3,"name":"User 3","nick":"user3","email":"user3@gmail.com","createOn":"2024-04-04T15:35:00-03:00"}]
+
+### Search for Following
+
+The `userID` is the user who wants to see who he is following.
+
+`GET /users/{userID}/following`
+
+    curl -i -X GET -H "Authorization: Bearer tokenHere" http://localhost:5000/users/2/following
+
+#### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    Date: Thu, 11 Apr 2024 19:21:55 GMT
+    Content-Length: 107
+
+    [{"id":1,"name":"User 1","nick":"user1","email":"user1@gmail.com","createOn":"2024-04-04T15:35:00-03:00"}]
+    

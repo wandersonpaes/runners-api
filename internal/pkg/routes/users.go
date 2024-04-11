@@ -61,4 +61,10 @@ var Users = []Route{
 		Function:       userRunner.SearchFollowing,
 		Authentication: true,
 	},
+	{
+		URI:            "/users/{userID}/update-password",
+		Method:         http.MethodPost,
+		Function:       userRunner.UpdatePassword,
+		Authentication: true,
+	},
 }

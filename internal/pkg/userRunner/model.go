@@ -18,6 +18,11 @@ type User struct {
 	CreateOn time.Time `json:"createOn,omitempty"`
 }
 
+type NewPassword struct {
+	New     string `json:"new"`
+	Current string `json:"current"`
+}
+
 func (user *User) Prepare(stage string) error {
 	if err := user.validate(stage); err != nil {
 		return err

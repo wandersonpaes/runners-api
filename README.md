@@ -61,7 +61,7 @@ Running the API:
 
 `POST /login`
 
-    curl -i -X POST -H "Content-Type: application/json" -d '{"email":"email@gmail.com","password":"123"}' http://localhost:5000/login
+    curl -i -X POST -H "Content-Type: application/json" -d '{"email":"email@gmail.com","password":"password"}' http://localhost:5000/login
 
 #### Response
 
@@ -80,7 +80,7 @@ Pay attention to the user token, you need it to make some requests.
 
 `POST /users`
 
-    curl -i -X POST -H "Content-Type: application/json" -d '{"name":"name","nick":"nick","email":"email@gmail.com","password":"123"}' http://localhost:5000/users
+    curl -i -X POST -H "Content-Type: application/json" -d '{"name":"name","nick":"nick","email":"email@gmail.com","password":"password"}' http://localhost:5000/users
 
 #### Response
 
@@ -150,6 +150,19 @@ Here you can update name, nick and email.
     Content-Type: application/json
     Date: Wed, 03 Apr 2024 22:08:32 GMT
 
+### Update Password
+
+The `userID` is the user who wants to update his password.
+
+`POST /users/{userID}/update-password`
+
+    curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer tokenHere" -d '{"new":"newPassword","current":"currentPassword"}' http://localhost:5000/users/1/update-password
+
+#### Response
+
+    HTTP/1.1 204 No Content
+    Content-Type: application/json
+    Date: Thu, 11 Apr 2024 20:59:05 GMT
 
 ### Follow Runner User
 
@@ -213,4 +226,3 @@ The `userID` is the user who wants to see who he is following.
     Content-Length: 107
 
     [{"id":1,"name":"User 1","nick":"user1","email":"user1@gmail.com","createOn":"2024-04-04T15:35:00-03:00"}]
-    

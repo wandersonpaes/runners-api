@@ -302,3 +302,67 @@ func SearchFollowing(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusOK, followers)
 }
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	userIDOnToken, err := security.ExtracUserID(r)
+	if err != nil {
+		response.ERR(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	parameters := mux.Vars(r)
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if userIDOnToken != userID {
+		response.ERR(w, http.StatusForbidden, errors.New("it's not possible to update password from another user"))
+		return
+	}
+
+	bodyRequest, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	var newPassword NewPassword
+	if err := json.Unmarshal(bodyRequest, &newPassword); err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	userTable := NewUserConnection(db)
+	passwordSavedInDatabase, err := userTable.searchPassword(userID)
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err = security.CheckPassword(passwordSavedInDatabase, newPassword.Current); err != nil {
+		response.ERR(w, http.StatusUnauthorized, errors.New("the current password is incorrect"))
+		return
+	}
+
+	passwordWithHash, err := security.Hash(newPassword.New)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = userTable.updatePassword(userID, string(passwordWithHash)); err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
+}

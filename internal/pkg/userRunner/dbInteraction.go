@@ -239,3 +239,39 @@ func (followersTable UserConnection) searchFollowing(userID uint64) ([]User, err
 
 	return users, nil
 }
+
+func (userTable UserConnection) searchPassword(userID uint64) (string, error) {
+	line, err := userTable.db.Query(
+		"select password from users where id = ?", userID,
+	)
+	if err != nil {
+		return "", err
+	}
+	defer line.Close()
+
+	var user User
+
+	if line.Next() {
+		if err := line.Scan(&user.Password); err != nil {
+			return "", err
+		}
+	}
+
+	return user.Password, nil
+}
+
+func (userTable UserConnection) updatePassword(userID uint64, password string) error {
+	statement, err := userTable.db.Prepare(
+		"update users set password = ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(password, userID); err != nil {
+		return err
+	}
+
+	return nil
+}

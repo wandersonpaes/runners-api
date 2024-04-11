@@ -252,3 +252,28 @@ func Unfollow(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusNoContent, nil)
 }
+
+func SearchFollowers(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		response.ERR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	followersTable := NewUserConnection(db)
+	followers, err := followersTable.searchFollowers(userID)
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, followers)
+}

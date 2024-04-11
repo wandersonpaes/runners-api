@@ -179,3 +179,33 @@ func (followersTable UserConnection) unfollow(userID, followerID uint64) error {
 
 	return nil
 }
+
+func (followersTable UserConnection) searchFollowers(userID uint64) ([]User, error) {
+	lines, err := followersTable.db.Query(`
+		select u.id, u.name, u.nick, u.email, u.createOn
+		from users u inner join followers f on u.id = f.follower_id where f.user_id = ?
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer lines.Close()
+
+	var users []User
+	for lines.Next() {
+		var user User
+
+		if err := lines.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreateOn,
+		); err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}

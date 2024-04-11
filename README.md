@@ -155,7 +155,7 @@ Here you can update name, nick and email.
 
 The `userID` is the user to be followed.
 
-`POST /user/{userID}/follow`
+`POST /users/{userID}/follow`
 
     curl -i -X POST -H "Authorization: Bearer tokenHere" http://localhost:5000/users/2/follow
 
@@ -169,7 +169,7 @@ The `userID` is the user to be followed.
 
 The `userID` is the user to be unfollowed.
 
-`POST /user/{userID}/unfollow`
+`POST /users/{userID}/unfollow`
 
     curl -i -X POST -H "Authorization: Bearer tokenHere" http://localhost:5000/users/2/unfollow
 
@@ -178,3 +178,21 @@ The `userID` is the user to be unfollowed.
     HTTP/1.1 204 No Content
     Content-Type: application/json
     Date: Fri, 05 Apr 2024 18:27:22 GMT
+
+### Search for Followers
+
+The `userID` is the user who wants to see his followers.
+
+`GET /users/{userID}/followers`
+
+    curl -i -X GET -H "Authorization: Bearer tokenHere" http://localhost:5000/users/1/followers
+
+#### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    Date: Thu, 11 Apr 2024 18:34:49 GMT
+    Content-Length: 212
+
+    [{"id":2,"name":"User 2","nick":"user2","email":"user2@gmail.com","createOn":"2024-04-04T15:35:00-03:00"},
+    {"id":3,"name":"User 3","nick":"user3","email":"user3@gmail.com","createOn":"2024-04-04T15:35:00-03:00"}]

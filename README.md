@@ -9,6 +9,7 @@ After cloning this repository. You need to have a database configured, I used My
     CREATE DATABASE IF NOT EXISTS runners;
     USE runners;
 
+    DROP TABLE IF EXISTS posts;
     DROP TABLE IF EXISTS followers;
     DROP TABLE IF EXISTS users;
 
@@ -34,6 +35,21 @@ After cloning this repository. You need to have a database configured, I used My
 
         primary key (user_id, follower_id)
     ) ENGINE=INNODB;
+
+    CREATE TABLE posts(
+        id int auto_increment primary key,
+        title varchar(50) not null,
+        postText varchar(300) not null,
+
+        author_id int not null,
+        FOREIGN key (author_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+        likes int default 0,
+        createOn timestamp default current_timestamp
+    ) ENGINE=INNODB;
+
 
 Then you need to create a `.env` file with the below content:
 

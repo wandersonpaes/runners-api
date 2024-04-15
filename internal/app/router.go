@@ -8,6 +8,7 @@ import (
 func SetUp(r *mux.Router) *mux.Router {
 	runnersRoutes := routes.Users
 	runnersRoutes = append(runnersRoutes, routes.Login)
+	runnersRoutes = append(runnersRoutes, routes.PostRoutes...)
 
 	for _, route := range runnersRoutes {
 		if route.Authentication {

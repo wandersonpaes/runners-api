@@ -71,7 +71,7 @@ Running the API:
 
 ## API
 
-### Login's endpoint
+### Login Endpoint
 
 ### Login Runner User
 
@@ -88,7 +88,7 @@ Running the API:
 
     {"id":5, "token": "token"}
 
-### User's endpoint
+### User Endpoint
 
 Pay attention to the user token, you need it to make some requests.
 
@@ -242,3 +242,22 @@ The `userID` is the user who wants to see who he is following.
     Content-Length: 107
 
     [{"id":1,"name":"User 1","nick":"user1","email":"user1@gmail.com","createOn":"2024-04-04T15:35:00-03:00"}]
+
+### Post Endpoint
+
+Pay attention to the user token, you need it to make the requests.
+
+### Create a Post
+
+`POST /posts`
+
+    curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer tokenHere" -d '{"title":"My first post", "postText": "Today I would like to talk about run"}' http://localhost:5000/posts
+
+#### Response
+
+    HTTP/1.1 201 Created
+    Content-Type: application/json
+    Date: Tue, 16 Apr 2024 14:51:11 GMT
+    Content-Length: 140
+
+    {"id":2,"title":"My first post","postText":"Today I would like to talk about run","authorId":2,"likes":0,"createOn":"0001-01-01T00:00:00Z"}

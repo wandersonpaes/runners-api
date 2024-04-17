@@ -261,3 +261,20 @@ Pay attention to the user token, you need it to make the requests.
     Content-Length: 140
 
     {"id":2,"title":"My first post","postText":"Today I would like to talk about run","authorId":2,"likes":0,"createOn":"0001-01-01T00:00:00Z"}
+
+### Search a Post by ID
+
+The `postID` is the ID of the post you want to see.
+
+`GET /posts/{postID}`
+
+    curl -i -X GET -H "Authorization: Bearer tokenHere" "http://localhost:5000/posts/1"
+
+#### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    Date: Wed, 17 Apr 2024 15:03:23 GMT
+    Content-Length: 166
+
+    {"id":1,"title":"My first post","postText":"Today I would like to talk about run","authorId":1,"authorNick":"user1","likes":0,"createOn":"2024-04-16T11:41:07-03:00"}

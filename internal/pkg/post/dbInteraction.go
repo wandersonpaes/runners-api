@@ -33,3 +33,33 @@ func (postTable postConnection) create(post Posts) (uint64, error) {
 
 	return uint64(lastInsertId), nil
 }
+
+func (postTable postConnection) searchByID(postID uint64) (Posts, error) {
+	line, err := postTable.db.Query(`
+		select p.*, u.nick from
+		posts p inner join users u
+		on u.id = p.author_id where p.id = ?`,
+		postID,
+	)
+	if err != nil {
+		return Posts{}, err
+	}
+	defer line.Close()
+
+	var post Posts
+	if line.Next() {
+		if err = line.Scan(
+			&post.ID,
+			&post.Title,
+			&post.PostText,
+			&post.AuthorID,
+			&post.Likes,
+			&post.CreateOn,
+			&post.AuthorNick,
+		); err != nil {
+			return Posts{}, err
+		}
+	}
+
+	return post, nil
+}

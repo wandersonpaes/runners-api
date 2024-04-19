@@ -71,9 +71,9 @@ Running the API:
 
 ## API
 
-### Login Endpoint
+Here you can find all endpoints available, how to use and their response.
 
-### Login Runner User
+### Login Endpoint
 
 `POST /login`
 

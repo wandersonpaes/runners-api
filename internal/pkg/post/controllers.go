@@ -56,7 +56,27 @@ func Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func SearchAll(w http.ResponseWriter, r *http.Request) {
+	userIdOnToken, err := security.ExtracUserID(r)
+	if err != nil {
+		response.ERR(w, http.StatusUnauthorized, err)
+		return
+	}
 
+	db, err := database.Conectar()
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	postTable := newPostConnection(db)
+	posts, err := postTable.searchAll(userIdOnToken)
+	if err != nil {
+		response.ERR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, posts)
 }
 
 func SearchOne(w http.ResponseWriter, r *http.Request) {

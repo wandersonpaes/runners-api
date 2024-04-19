@@ -63,3 +63,17 @@ func (postTable postConnection) searchByID(postID uint64) (Posts, error) {
 
 	return post, nil
 }
+
+func (postTable postConnection) searchAll(userID uint64) ([]Posts, error) {
+	lines, err := postTable.db.Query(
+		"",
+	)
+	if err != nil {
+		return nil, err
+	}
+	lines.Close()
+
+	var posts []Posts
+
+	return posts, nil
+}

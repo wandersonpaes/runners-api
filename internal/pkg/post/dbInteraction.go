@@ -65,15 +65,37 @@ func (postTable postConnection) searchByID(postID uint64) (Posts, error) {
 }
 
 func (postTable postConnection) searchAll(userID uint64) ([]Posts, error) {
-	lines, err := postTable.db.Query(
-		"",
+	lines, err := postTable.db.Query(`
+		select distinct p.*, u.nick from posts p
+		inner join users u on u.id = p.author_id
+		inner join followers f on p.author_id = f.user_id
+		where u.id = ? or f.follower_id = ?`,
+		userID, userID,
 	)
 	if err != nil {
 		return nil, err
 	}
-	lines.Close()
+	defer lines.Close()
 
 	var posts []Posts
+
+	for lines.Next() {
+		var post Posts
+
+		if err = lines.Scan(
+			&post.ID,
+			&post.Title,
+			&post.PostText,
+			&post.AuthorID,
+			&post.Likes,
+			&post.CreateOn,
+			&post.AuthorNick,
+		); err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
 
 	return posts, nil
 }

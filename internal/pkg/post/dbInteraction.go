@@ -69,7 +69,8 @@ func (postTable postConnection) searchAll(userID uint64) ([]Posts, error) {
 		select distinct p.*, u.nick from posts p
 		inner join users u on u.id = p.author_id
 		inner join followers f on p.author_id = f.user_id
-		where u.id = ? or f.follower_id = ?`,
+		where u.id = ? or f.follower_id = ?
+		order by 1 desc`,
 		userID, userID,
 	)
 	if err != nil {

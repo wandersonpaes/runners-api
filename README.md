@@ -278,3 +278,18 @@ The `postID` is the ID of the post you want to see.
     Content-Length: 166
 
     {"id":1,"title":"My first post","postText":"Today I would like to talk about run","authorId":1,"authorNick":"user1","likes":0,"createOn":"2024-04-16T11:41:07-03:00"}
+
+### Search All Post from followers
+
+`GET /posts`
+
+    curl -i -X GET -H "Authorization: Bearer tokenHere" "http://localhost:5000/posts"
+
+#### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    Date: Thu, 25 Apr 2024 21:59:47 GMT
+    Content-Length: 372
+
+    [{"id":3,"title":"Post User 3","postText":"This is a post from user 3","authorId":3,"authorNick":"user3","likes":0,"createOn":"2024-04-24T21:06:19-03:00"},{"id":1,"title":"Post User 1","postText":"This is a post from user 1","authorId":1,"authorNick":"user1","likes":0,"createOn":"2024-04-24T21:06:19-03:00"}]
